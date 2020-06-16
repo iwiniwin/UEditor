@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.IO;
-using static UKit.Utils.Output;
 
 public class FileMenuExtend : MonoBehaviour
 {

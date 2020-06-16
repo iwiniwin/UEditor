@@ -1,21 +1,17 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System.IO;
-using UKit.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Runtime;
-using static UKit.Utils.Output;
+using System.Security.Cryptography;
 
 public class AssetsMenuExtend
 {
     // [MenuItem("Assets/Show In Project")]
     static void ShowInProject(){
-        // Dump(Selection.activeObject.name, "666666666");
-        // Dump(Selection.activeObject.GetInstanceID(), "tttttt");
-        // Dump("ssssssssss");
         // EditorUtility.Ping
         
         // EditorGUIUtility.PingObject();
@@ -75,31 +71,36 @@ public class AssetsMenuExtend
     /// <summary>
     /// 构建 AssetBundle
     /// </summary>
-    [MenuItem("Assets/Extend/Build AssetBundle")]
-    static void BuildAssetBundle(){
-        string outPath = Path.Combine(Application.dataPath, "StreamingAssets");
-        if(Directory.Exists(outPath)){
-            Directory.Delete(outPath);
-        }
-        Directory.CreateDirectory(outPath);
+    // [MenuItem("Assets/Extend/Build AssetBundle")]
+    // static void BuildAssetBundle(){
+    //     string outPath = Path.Combine(Application.dataPath, "StreamingAssets");
+    //     if(Directory.Exists(outPath)){
+    //         Directory.Delete(outPath);
+    //     }
+    //     Directory.CreateDirectory(outPath);
 
-        // 构建AssetBundle
-        BuildPipeline.BuildAssetBundles(outPath, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows64);
+    //     // 构建AssetBundle
+    //     BuildPipeline.BuildAssetBundles(outPath, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows64);
 
-        List<AssetBundleBuild> builds = new List<AssetBundleBuild>();
-        // 生成描述文件
-        BundleList bundleList = ScriptableObject.CreateInstance<BundleList>();
-        foreach (var item in builds)
-        {
-            foreach (var res in item.assetNames)
-            {
-                bundleList.bundleDatas.Add(new BundleList.BundleData(){resPath = res, bundlePath = item.assetBundleName});
-            }
-        }
-        AssetDatabase.CreateAsset(bundleList, "Assets/Resources/bundleList.asset");
+    //     List<AssetBundleBuild> builds = new List<AssetBundleBuild>();
+    //     // 生成描述文件
+    //     BundleList bundleList = ScriptableObject.CreateInstance<BundleList>();
+    //     foreach (var item in builds)
+    //     {
+    //         foreach (var res in item.assetNames)
+    //         {
+    //             bundleList.bundleDatas.Add(new BundleList.BundleData(){resPath = res, bundlePath = item.assetBundleName});
+    //         }
+    //     }
+    //     AssetDatabase.CreateAsset(bundleList, "Assets/Resources/bundleList.asset");
         
-        // 刷新
-        AssetDatabase.Refresh();
+    //     // 刷新
+    //     AssetDatabase.Refresh();
+    // }
+
+    static string GetMD5Hash(string path){
+        MD5 md5 = new MD5CryptoServiceProvider();
+        return System.BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(path))).Replace("-", "").ToLower();
     }
 
     /// <summary>
@@ -119,7 +120,7 @@ public class AssetsMenuExtend
                 AssetImporter importer = AssetImporter.GetAtPath(assetPath);
                 // 满足贴图和模型资源
                 if(importer is TextureImporter || importer is ModelImporter || true){
-                    string md5 = FileSystem.GetMD5Hash(Path.Combine(Directory.GetCurrentDirectory(), assetPath));
+                    string md5 = GetMD5Hash(Path.Combine(Directory.GetCurrentDirectory(), assetPath));
                     string path;
                     if(!md5dic.TryGetValue(md5, out path)){
                         md5dic[md5] = assetPath;
