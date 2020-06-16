@@ -10,6 +10,28 @@ using System.Security.Cryptography;
 
 public class AssetsMenuExtend
 {
+
+#if UEditor_A0
+    /// <summary>
+    /// 清除无用资源
+    /// </summary>
+    [MenuItem("Assets/Extend/Clear")]
+    static void UnloadUnusedAssetsImmediate(){
+        EditorUtility.UnloadUnusedAssetsImmediate();
+    }
+#endif
+
+#if UEditor_A1
+    /// <summary>
+    /// 查找重复资源
+    /// </summary>
+    [MenuItem("Assets/Extend/Find Duplicate Resources")]
+    static void FindDuplicateResources(){
+        FindDuplicateResourcesImpl();
+    }
+#endif
+
+
     // [MenuItem("Assets/Show In Project")]
     static void ShowInProject(){
         // EditorUtility.Ping
@@ -61,14 +83,6 @@ public class AssetsMenuExtend
     }
 
     /// <summary>
-    /// 清除无用资源
-    /// </summary>
-    [MenuItem("Assets/Extend/Clear")]
-    static void UnloadUnusedAssetsImmediate(){
-        EditorUtility.UnloadUnusedAssetsImmediate();
-    }
-
-    /// <summary>
     /// 构建 AssetBundle
     /// </summary>
     // [MenuItem("Assets/Extend/Build AssetBundle")]
@@ -103,11 +117,7 @@ public class AssetsMenuExtend
         return System.BitConverter.ToString(md5.ComputeHash(File.ReadAllBytes(path))).Replace("-", "").ToLower();
     }
 
-    /// <summary>
-    /// 查找重复资源
-    /// </summary>
-    [MenuItem("Assets/Extend/Find Duplicate Resources")]
-    static void FindDuplicateResources(){
+    static void FindDuplicateResourcesImpl(){
         Dictionary<string, string> md5dic = new Dictionary<string, string>();
         string[] paths = AssetDatabase.FindAssets("t:prefab", new string[]{"Assets/Resources"});
         foreach (var prefabGUID in paths)
@@ -133,7 +143,6 @@ public class AssetsMenuExtend
             }
         }
     }
-
     
     static void Find(){
         Dictionary<string, string> guidDics = new Dictionary<string, string>();
@@ -175,9 +184,9 @@ public class AssetsMenuExtend
         return "Assets" + Path.GetFullPath(path).Replace(Path.GetFullPath(Application.dataPath), "").Replace("\\", "/");
     }
 
-    [MenuItem("Assets/Extend/Find References", true)]  // true 验证函数，在调用具有相同 item name 的菜单函数之前调用
-    static bool VFind(){
-        string path = AssetDatabase.GetAssetPath(Selection.activeObject);
-        return (!string.IsNullOrEmpty(path));
-    }
+    // [MenuItem("Assets/Extend/Find References", true)]  // true 验证函数，在调用具有相同 item name 的菜单函数之前调用
+    // static bool VFind(){
+    //     string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+    //     return (!string.IsNullOrEmpty(path));
+    // }
 }

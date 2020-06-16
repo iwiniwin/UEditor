@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.IO;
 
-public class FileMenuExtend : MonoBehaviour
+public class FileMenuExtend
 {
     [MenuItem("File/Open Editor Folder", false, 0)]
     static void OpenEditorFolder(){
