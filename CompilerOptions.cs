@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+#if UEditor_C0
 [InitializeOnLoad]
 public class CompilerOptions 
 {
@@ -14,7 +15,7 @@ public class CompilerOptions
 
     static void OnEditorUpdate(){
         if(EditorApplication.isCompiling) {
-            EditorUtility.DisplayProgressBar("Script Compiling", "please wait for a moment ......", 1.0f);
+            EditorUtility.DisplayCancelableProgressBar("Script Compiling", "please wait for a moment ......", 1.0f);
         }
         if(EditorUtility.scriptCompilationFailed){
             EditorUtility.ClearProgressBar();
@@ -34,3 +35,4 @@ public class CompilerOptions
         EditorUtility.ClearProgressBar();
     }
 }
+#endif

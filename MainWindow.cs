@@ -9,6 +9,12 @@ public class MainWindow : EditorWindow
         // 描述，宏
         {"清除无用资源（Assets/Extend/Clear）", "UEditor_A0"},
         {"查找重复资源（Assets/Extend/Find Duplicate Resources）", "UEditor_A1"},
+
+        {"打开编辑器所在目录（File/Open Editor Folder）", "UEditor_F0"},
+        {"打开工程所在目录（File/Open Project Folder）", "UEditor_F1"},
+
+        {"程序集重新加载时是否弹出提示", "UEditor_C0"},
+
     };
 
     static bool[] options = new bool[Features.GetLength(0)];
@@ -26,43 +32,57 @@ public class MainWindow : EditorWindow
             else
                 options[i] = false;
         }
-        EditorWindow.GetWindow(typeof(MainWindow));;
+        EditorWindow.GetWindow(typeof(MainWindow), false, "Editor Window").minSize = new Vector2(500, 200);
     }
 
     Vector2 scrollPos;
-    int bottomAreaWidth = 25;
+    int bottomAreaHeight = 25;
     int buttonGap = 5;
 
     void OnGUI(){
 
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(position.width), GUILayout.Height(position.height));
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 14;
+        style.padding = new RectOffset(5, 5, 5, 5);
+        GUILayout.Label("启用/禁用以下编辑器扩展", style);
+
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(position.width), GUILayout.Height(position.height - bottomAreaHeight - buttonGap - 30));
 
         for(int i = 0; i < options.Length; i ++){
             options[i] = GetToggle(Features[i, 0], options[i]);
         }
 
-        GUILayout.BeginArea( new Rect(buttonGap, position.height - bottomAreaWidth, position.width - buttonGap * 2, position.height));
+        EditorGUILayout.EndScrollView();
+
+        GUILayout.BeginArea( new Rect(buttonGap, position.height - bottomAreaHeight, position.width - buttonGap * 2, position.height));
+
 
         EditorGUILayout.BeginHorizontal();
-        if(GUILayout.Button("取消")){
+        GUILayout.FlexibleSpace();
+        if(GUILayout.Button("取消", GUILayout.MaxWidth(100))){
             this.Close();
         }
-        if(GUILayout.Button("保存")){
+        if(GUILayout.Button("保存", GUILayout.MaxWidth(100))){
             Save();
             this.Close();
         }
+        // GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
 
 
         GUILayout.EndArea();
-
-        EditorGUILayout.EndScrollView();
-        
     }
 
     bool GetToggle(string text, bool toggle){
         GUILayout.BeginHorizontal();
-        GUILayout.Label(text);
+        GUIStyle style = new GUIStyle();
+        Color color;
+        ColorUtility.TryParseHtmlString("#434343", out color);
+        style.normal.textColor = color;
+        style.fontSize = 12;
+        // left --
+        style.padding = new RectOffset(10, 0, 0, 0);
+        GUILayout.Label(text, style);
         GUILayout.FlexibleSpace();
         toggle = GUILayout.Toggle(toggle, "");
         GUILayout.EndHorizontal();
