@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.Reflection;
+using UnityEditorInternal;
+using UnityEditor.Scripting.ScriptCompilation;
 
 public class MainWindow : EditorWindow
 {
@@ -21,6 +24,8 @@ public class MainWindow : EditorWindow
 
     static HashSet<string> macroSet = null;
 
+    static MethodInfo reloadMethod = null;
+
     [MenuItem("Window/UEditor Window")]
     static void InitMainWindow(){
         string macroStr = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
@@ -33,6 +38,8 @@ public class MainWindow : EditorWindow
                 options[i] = false;
         }
         EditorWindow.GetWindow(typeof(MainWindow), false, "UEditor Window").minSize = new Vector2(500, 200);
+
+        SetReloadMethod();
     }
 
     Vector2 scrollPos;
@@ -69,14 +76,15 @@ public class MainWindow : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
+        
+        if(GUILayout.Button(reloadMethod == null ? "保存并重启" : "保存", GUILayout.MaxWidth(100))){
+            OnClickSave();
+        }
         if(GUILayout.Button("取消", GUILayout.MaxWidth(100))){
             this.Close();
         }
-        if(GUILayout.Button("保存", GUILayout.MaxWidth(100))){
-            Save();
-            this.Close();
-        }
         // GUILayout.FlexibleSpace();
+
         EditorGUILayout.EndHorizontal();
 
 
@@ -99,6 +107,25 @@ public class MainWindow : EditorWindow
         return toggle;
     }
 
+    void OnClickSave(){
+        if(macroSet == null){
+            this.ShowNotification(new GUIContent("数据异常无法保存，请关闭窗口重试"));
+            return;
+        }
+        
+        if(reloadMethod != null){
+            this.Save();
+            reloadMethod.Invoke(null, null);
+            this.Close();
+        }else{
+            if(EditorUtility.DisplayDialog("提示", "说明：2019.3版本前的Unity需要重启才能保存\n\n立即重启编辑器？", "立即重启", "取消")){
+                this.Save();
+                this.Close();
+                Restart();
+            }
+        }
+    }
+
     void Save(){
         for(int i = 0; i < options.Length; i ++){
             string macro = Features[i, 1];
@@ -110,5 +137,18 @@ public class MainWindow : EditorWindow
         }
         string macroStr = string.Join(";", new List<string>(macroSet));
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, macroStr);
+    }
+
+    static void SetReloadMethod(){
+        Assembly assembly = Assembly.GetAssembly(typeof(Editor));
+        System.Type editorUtilityType = assembly.GetType("UnityEditor.EditorUtility");
+        reloadMethod = editorUtilityType.GetMethod("RequestScriptReload", BindingFlags.Public | BindingFlags.Static);
+    }
+
+    static void Restart(){
+        // 重启Editor
+        Assembly assembly = Assembly.GetAssembly(typeof(Editor));
+        System.Type editorApplicationType = assembly.GetType("UnityEditor.EditorApplication");
+        editorApplicationType.GetMethod("RequestCloseAndRelaunchWithCurrentArguments", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
     }
 }
