@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UKit.Utils.Output;
 
 public class #SCRIPTNAME# : MonoBehaviour
 {

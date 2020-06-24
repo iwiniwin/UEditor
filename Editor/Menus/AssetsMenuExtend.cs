@@ -203,13 +203,13 @@ public class AssetsMenuExtend
     // }
 
 
-    private const string MY_SCRIPT_DEFAULT = "Assets/UEditor/Templates/NewScript.cs.txt";
     public static void CreateMyScriptImpl(){
+        string templatePath = AssetDatabase.GUIDToAssetPath("0c9fe7c5a10e27b4ab8d6c57ef1f4ff0");
         string locationPath = GetSelectedPathOrFallback();
-        string fileName = Path.GetFileNameWithoutExtension(MY_SCRIPT_DEFAULT);
+        string fileName = Path.GetFileNameWithoutExtension(templatePath);
         string fileExtension = Path.GetExtension(fileName).Substring(1);
         Texture2D icon = (EditorGUIUtility.IconContent(fileExtension + " Script Icon").image as Texture2D);
-        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(), locationPath + "/" + fileName, icon, MY_SCRIPT_DEFAULT);
+        ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, ScriptableObject.CreateInstance<MyDoCreateScriptAsset>(), locationPath + "/" + fileName, icon, templatePath);
     }
 
     public static string GetSelectedPathOrFallback(){
