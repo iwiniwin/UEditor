@@ -2,6 +2,8 @@
 using UnityEditor;
 using System.IO;
 
+namespace UEditor {
+
 public class FileMenuExtend
 {
 #if UEditor_F0
@@ -19,4 +21,6 @@ public class FileMenuExtend
         Application.OpenURL("file://" + projectPath);
     }
 #endif
+}
+
 }

@@ -6,17 +6,23 @@ using System.Reflection;
 using UnityEditorInternal;
 using UnityEditor.Scripting.ScriptCompilation;
 
+namespace UEditor {
+
 public class MainWindow : EditorWindow
 {
     static string[,] Features = new string[,]{
         // 描述，宏，修改后是否需要重启
+        {"打开编辑器所在目录（File/Open Editor Folder）", "UEditor_F0", ""},
+        {"打开工程所在目录（File/Open Project Folder）", "UEditor_F1", ""},
+
         {"清除无用资源（Assets/Extend/Clear）", "UEditor_A0", ""},
         {"查找重复资源（Assets/Extend/Find Duplicate Resources）", "UEditor_A1", ""},
         {"根据自定义模板新建脚本并打开（Assets/Create/C# Stand Script）", "UEditor_A2", ""},
+        
         {"将场景图像存储到Cubemap工具（GameObject/Render into Cubemap）", "UEditor_GR0", ""},
 
-        {"打开编辑器所在目录（File/Open Editor Folder）", "UEditor_F0", ""},
-        {"打开工程所在目录（File/Open Project Folder）", "UEditor_F1", ""},
+
+        {"在编辑器标题栏显示工程路径（Window/Show Project Path in Title）", "UEditor_W0", ""},
 
         {"程序集重新加载时是否弹出提示", "UEditor_C0", "true"},
     };
@@ -177,4 +183,6 @@ public class MainWindow : EditorWindow
         System.Type editorApplicationType = assembly.GetType("UnityEditor.EditorApplication");
         editorApplicationType.GetMethod("RequestCloseAndRelaunchWithCurrentArguments", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
     }
+}
+
 }

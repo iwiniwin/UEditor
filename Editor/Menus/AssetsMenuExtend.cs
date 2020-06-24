@@ -10,6 +10,8 @@ using System.Security.Cryptography;
 using UnityEditor.ProjectWindowCallback;
 using System.Text;
 
+namespace UEditor {
+
 public class AssetsMenuExtend
 {
 
@@ -251,4 +253,6 @@ class MyDoCreateScriptAsset : EndNameEditAction{
         AssetDatabase.ImportAsset(pathName);
         return AssetDatabase.LoadAssetAtPath(pathName, typeof(UnityEngine.Object));
     }
+}
+
 }

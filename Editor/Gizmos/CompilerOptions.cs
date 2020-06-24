@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+namespace UEditor {
+
 #if UEditor_C0
 [InitializeOnLoad]
 public class CompilerOptions 
@@ -36,3 +38,5 @@ public class CompilerOptions
     }
 }
 #endif
+
+}

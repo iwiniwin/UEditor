@@ -4,6 +4,8 @@
 using UnityEngine;
 using UnityEditor;
 
+namespace UEditor {
+
 #if UEditor_GR0
 public class RenderCubemapWizard : ScriptableWizard
 {
@@ -36,3 +38,5 @@ public class RenderCubemapWizard : ScriptableWizard
     }
 }
 #endif
+
+}
