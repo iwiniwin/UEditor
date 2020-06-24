@@ -4,6 +4,7 @@
 using UnityEngine;
 using UnityEditor;
 
+#if UEditor_GR0
 public class RenderCubemapWizard : ScriptableWizard
 {
     public Transform renderFromPosition;
@@ -34,3 +35,4 @@ public class RenderCubemapWizard : ScriptableWizard
         ScriptableWizard.DisplayWizard<RenderCubemapWizard>("Render Cubemap", "Render");
     }
 }
+#endif
