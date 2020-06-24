@@ -9,22 +9,20 @@ using UnityEditor.Scripting.ScriptCompilation;
 public class MainWindow : EditorWindow
 {
     static string[,] Features = new string[,]{
-        // 描述，宏
-        {"清除无用资源（Assets/Extend/Clear）", "UEditor_A0"},
-        {"查找重复资源（Assets/Extend/Find Duplicate Resources）", "UEditor_A1"},
-        {"根据自定义模板新建脚本并打开（Assets/Create/C# Stand Script）", "UEditor_A2"},
+        // 描述，宏，修改后是否需要重启
+        {"清除无用资源（Assets/Extend/Clear）", "UEditor_A0", ""},
+        {"查找重复资源（Assets/Extend/Find Duplicate Resources）", "UEditor_A1", ""},
+        {"根据自定义模板新建脚本并打开（Assets/Create/C# Stand Script）", "UEditor_A2", ""},
 
-        {"打开编辑器所在目录（File/Open Editor Folder）", "UEditor_F0"},
-        {"打开工程所在目录（File/Open Project Folder）", "UEditor_F1"},
+        {"打开编辑器所在目录（File/Open Editor Folder）", "UEditor_F0", ""},
+        {"打开工程所在目录（File/Open Project Folder）", "UEditor_F1", ""},
 
-        {"程序集重新加载时是否弹出提示", "UEditor_C0"},
+        {"程序集重新加载时是否弹出提示", "UEditor_C0", "true"},
     };
 
     static bool[] options = new bool[Features.GetLength(0)];
 
     static HashSet<string> macroSet = null;
-
-    static MethodInfo reloadMethod = null;
 
     [MenuItem("Window/UEditor Window")]
     static void InitMainWindow(){
@@ -38,8 +36,6 @@ public class MainWindow : EditorWindow
                 options[i] = false;
         }
         EditorWindow.GetWindow(typeof(MainWindow), false, "UEditor Window").minSize = new Vector2(500, 200);
-
-        SetReloadMethod();
     }
 
     Vector2 scrollPos;
@@ -75,9 +71,18 @@ public class MainWindow : EditorWindow
         GUILayout.BeginArea( new Rect(0, position.height - bottomAreaHeight, position.width, position.height), areaStyle);
 
         EditorGUILayout.BeginHorizontal();
+
+        // GUIStyle tipStyle = new GUIStyle();
+        // tipStyle.fontSize = 10;
+        // tipStyle.padding = new RectOffset(5, 0, 6, 0);
+        // Color tipColor;
+        // ColorUtility.TryParseHtmlString("#434343", out tipColor);
+        // tipStyle.normal.textColor = tipColor;
+        // GUILayout.Label("tips：保存后请稍等片刻，编辑器重新编译后生效", tipStyle);
+
         GUILayout.FlexibleSpace();
         
-        if(GUILayout.Button(reloadMethod == null ? "保存并重启" : "保存", GUILayout.MaxWidth(100))){
+        if(GUILayout.Button("保存", GUILayout.MaxWidth(100))){
             OnClickSave();
         }
         if(GUILayout.Button("取消", GUILayout.MaxWidth(100))){
@@ -112,16 +117,36 @@ public class MainWindow : EditorWindow
             this.ShowNotification(new GUIContent("数据异常无法保存，请关闭窗口重试"));
             return;
         }
-        
-        if(reloadMethod != null){
-            this.Save();
-            reloadMethod.Invoke(null, null);
-            this.Close();
-        }else{
-            if(EditorUtility.DisplayDialog("提示", "说明：2019.3版本前的Unity需要重启才能保存\n\n立即重启编辑器？", "立即重启", "取消")){
+
+        string restartTip = "";
+        for(int i = 0; i < options.Length; i ++){
+            if(Features[i, 2] == "true"){
+                if(options[i] != macroSet.Contains(Features[i, 1])){
+                    restartTip += ("\n\n    ● " + Features[i, 0]);
+                }
+            }
+        }
+
+        if(restartTip != ""){
+            if(EditorUtility.DisplayDialog("提示", "修改了以下配置，需要重启才能保存" + restartTip + "\n\n立即保存重启编辑器？", "保存并重启", "取消")){
                 this.Save();
                 this.Close();
                 Restart();
+            }
+        }else{
+            int option = EditorUtility.DisplayDialogComplex("提示", "是否保存当前修改？\n\n保存后请稍等片刻，编辑器重新编译后生效", "保存", "取消", "保存并重启");
+            switch(option){
+                case 0:
+                    this.Save();
+                    this.Close();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    this.Save();
+                    this.Close();
+                    Restart();
+                    break;
             }
         }
     }
@@ -139,10 +164,10 @@ public class MainWindow : EditorWindow
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, macroStr);
     }
 
-    static void SetReloadMethod(){
+    static void Reload(){
         Assembly assembly = Assembly.GetAssembly(typeof(Editor));
         System.Type editorUtilityType = assembly.GetType("UnityEditor.EditorUtility");
-        reloadMethod = editorUtilityType.GetMethod("RequestScriptReload", BindingFlags.Public | BindingFlags.Static);
+        editorUtilityType.GetMethod("RequestScriptReload", BindingFlags.Public | BindingFlags.Static);
     }
 
     static void Restart(){
