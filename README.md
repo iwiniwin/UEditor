@@ -12,7 +12,7 @@ UEditor是一个Unity编辑器扩展集，包含了一些实用的Unity编辑器
 
 ### UEditor Window
 通过菜单栏`Window/UEditor Window`打开
-
+![](/Docs/ueditor_window.png)
 通过UEditor Window可以配置启用/禁用哪些扩展，被禁用后的扩展将不再生效，也不会出现在编辑器中
 
 **注意事项**
