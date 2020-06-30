@@ -12,7 +12,9 @@ UEditor是一个Unity编辑器扩展集，包含了一些实用的Unity编辑器
 
 ### UEditor Window
 通过菜单栏`Window/UEditor Window`打开
+
 ![](/Docs/ueditor_window.png)
+
 通过UEditor Window可以配置启用/禁用哪些扩展，被禁用后的扩展将不再生效，也不会出现在编辑器中
 
 **注意事项**
@@ -67,13 +69,21 @@ GameObject菜单扩展，位置`GameObject/Render into Cubemap`
 
 使用这个扩展可以方便的将从指定位置观察到的场景图像存储到cubemap中
 
+![](/Docs/render_cubemap.png)
+
 #### 在编辑器标题栏显示工程路径
 
 Window菜单扩展，位置`Window/Show Project Path in Title`
 
 有时候有多个工程的话，可能会打开多个Unity编辑器，这个时候就无法直观的看出哪个编辑器打开的是哪个工程
+
 使用这个扩展可以在编辑器的标题栏加上工程路径的显示
+   
+![](/Docs/editor_title_with_project_path.png)
 
 #### 程序集重新加载时是否弹出提示
 Unity默认会在脚本组件修改后自动重新编译脚本，过程中会造成Unity卡顿，但这个卡顿不是立即出现的，可能在你正操作Unity的时候就刚好出现了，给人的感觉就是操作突然被打断了，个人觉得还是有些难受的
+
 所以添加了这个扩展，在程序集重新加载时弹出一个提示，好有个心里准备~
+
+![](/Docs/compile_tip.png)
