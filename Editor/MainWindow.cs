@@ -15,6 +15,8 @@ public class MainWindow : EditorWindow
         {"打开编辑器所在目录（File/Open Editor Folder）", "UEditor_F0", ""},
         {"打开工程所在目录（File/Open Project Folder）", "UEditor_F1", ""},
 
+        {"复制场景中游戏对象的相对路径（GameObject/Copy Relative Path）", "UEditor_G0", ""},
+
         {"清除无用资源（Assets/Extend/Clear）", "UEditor_A0", ""},
         {"查找重复资源（Assets/Extend/Find Duplicate Resources）", "UEditor_A1", ""},
         {"根据自定义模板新建脚本并打开（Assets/Create/C# Stand Script）", "UEditor_A2", ""},
