@@ -48,47 +48,22 @@ public class MainWindow : EditorWindow
     }
 
     Vector2 scrollPos;
-    int bottomAreaHeight = 24;
-    int buttonGap = 5;
 
     void OnGUI(){
 
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 15;
-        style.padding = new RectOffset(5, 5, 5, 5);
-        GUILayout.Label("启用/禁用以下编辑器扩展", style);
-
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Width(position.width), GUILayout.Height(position.height - bottomAreaHeight - buttonGap - 30));
-
+        GUIStyle style = new GUIStyle(EditorStyles.label);
+        style.fontSize = 18;
+        EditorGUILayout.LabelField("启用/禁用以下编辑器扩展", style);
+        EditorGUILayout.Space();
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
         for(int i = 0; i < options.Length; i ++){
             options[i] = GetToggle(Features[i, 0], options[i]);
         }
-
         EditorGUILayout.EndScrollView();
 
-
-        GUIStyle areaStyle = new GUIStyle();
-        Color color;
-        ColorUtility.TryParseHtmlString("#a2a2a2", out color);
-        Texture2D texture = new Texture2D(128, 128);
-        Color[] colors = texture.GetPixels();
-        for(int i = 0; i < colors.Length; i ++)
-            colors[i] = color;
-        texture.SetPixels(colors);
-        texture.Apply();
-        areaStyle.normal.background = texture;
-        GUILayout.BeginArea( new Rect(0, position.height - bottomAreaHeight, position.width, position.height), areaStyle);
+        GUILayout.FlexibleSpace();
 
         EditorGUILayout.BeginHorizontal();
-
-        // GUIStyle tipStyle = new GUIStyle();
-        // tipStyle.fontSize = 10;
-        // tipStyle.padding = new RectOffset(5, 0, 6, 0);
-        // Color tipColor;
-        // ColorUtility.TryParseHtmlString("#434343", out tipColor);
-        // tipStyle.normal.textColor = tipColor;
-        // GUILayout.Label("tips：保存后请稍等片刻，编辑器重新编译后生效", tipStyle);
-
         GUILayout.FlexibleSpace();
         
         if(GUILayout.Button("保存", GUILayout.MaxWidth(100))){
@@ -97,23 +72,13 @@ public class MainWindow : EditorWindow
         if(GUILayout.Button("取消", GUILayout.MaxWidth(100))){
             this.Close();
         }
-        // GUILayout.FlexibleSpace();
-
         EditorGUILayout.EndHorizontal();
-
-
-        GUILayout.EndArea();
     }
 
     bool GetToggle(string text, bool toggle){
         GUILayout.BeginHorizontal();
-        GUIStyle style = new GUIStyle();
-        Color color;
-        ColorUtility.TryParseHtmlString("#434343", out color);
-        style.normal.textColor = color;
-        style.fontSize = 13;
-        // left --
-        style.padding = new RectOffset(10, 0, 0, 0);
+        GUIStyle style = new GUIStyle(EditorStyles.largeLabel);
+        style.padding = new RectOffset(10, 0, 5, 0);
         GUILayout.Label(text, style);
         GUILayout.FlexibleSpace();
         toggle = GUILayout.Toggle(toggle, "");
